@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 /**
+ * 按下效果
  * Created by ShuDongShu on 2014/9/2.
  */
 public class ScaleImageButton extends ImageView
