@@ -27,8 +27,15 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <meta-data
+			android:name="com.baidu.lbsapi.API_KEY"
+		android:value="SkDULm2El8tSpZzoOEwv4DbS" />
+        <!-- 公司key -->
+        <!-- SkDULm2El8tSpZzoOEwv4DbS -->
+        <!-- 家庭key -->
+        <!--  -->
         <activity
-            android:name="com.dreamchen.useful.mouserace.test.TestThemeActivity"
+            android:name="com.dreamchen.useful.mouserace.baidu.BaiduMapActivity"
             android:label="@string/app_name" 
             android:theme="@style/custome_style"
             >
