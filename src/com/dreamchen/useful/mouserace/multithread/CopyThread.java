@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.util.logging.LogManager;
+
+import com.dreamchen.useful.mouserace.utils.LogUtils;
 
 public class CopyThread extends Thread{
 	private RandomAccessFile fin = null;
@@ -34,11 +37,16 @@ public class CopyThread extends Thread{
 			ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
 			int total =0;
 			int byteLength = 0;
-			fin.skipBytes((int) begin);
-			fout.skipBytes((int) begin);
-			while((byteLength = fin.read(buffer.array()))>0){
+			fin.seek(begin);
+			fout.seek(begin);
+			while((byteLength = fin.read(buffer.array()))>0&&total<end){
 				total+=byteLength;
-				fout.write(buffer.array());
+				if(total>end){
+					long delete_length = total-end;
+					fout.write(buffer.array(),0,(int)(byteLength-delete_length));
+				}else{
+					fout.write(buffer.array());
+				}
 				buffer.clear();
 			}
 			stateCallBack.setLength(total);

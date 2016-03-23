@@ -51,8 +51,7 @@ public class TestIOActivity extends BaseActivity implements OnClickListener {
 		btn_stop.setOnClickListener(this);
 		btn_clear.setOnClickListener(this);
 		
-		fromPath = PathManager.getPhotosPath()+File.separator+"test.zip";
-		toPath =PathManager.getPhotosTemp()+File.separator+System.currentTimeMillis();
+		fromPath = PathManager.getPhotosPath()+File.separator+"test.mp4";
 	}
 
 	private long time = 0;
@@ -60,6 +59,7 @@ public class TestIOActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_copy:
+			toPath =PathManager.getPhotosTemp()+File.separator+System.currentTimeMillis();
 			time = System.nanoTime();
 			new CopyTask(fromPath, toPath).execute();
 			break;
