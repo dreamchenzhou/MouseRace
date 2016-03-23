@@ -206,7 +206,7 @@ public class PathManager {
 
 	public static String getPhotosTemp()
 	{
-		String path = sdcard + "/Topevery/TempPhotos";
+		String path = sdcard + "/dream/TempPhotos";
 		mkdirs(path);
 		return path;
 	}

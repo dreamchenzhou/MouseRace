@@ -52,10 +52,10 @@ public class TestUdpActivity extends BaseActivity implements OnClickListener{
 					UdpSendService.send(ip);
 				};
 			}.start();
-			if(receicer.isInterrupted()){
+			if(receicer == null||!receicer.isAlive()){
 				receicer = new UdpReceiverServer(mHandler,ip);
+				receicer.start();
 			}
-			receicer.start();
 			break;
 		case R.id.btn_stop:
 			receicer.interrupt();

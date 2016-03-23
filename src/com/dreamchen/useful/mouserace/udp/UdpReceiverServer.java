@@ -24,7 +24,7 @@ public class UdpReceiverServer extends Thread {
 	@Override
 	public void run() {
 		try {
-			InetAddress address = InetAddress.getByName(ip);
+//			InetAddress address = InetAddress.getByName(ip);
 //			MulticastSocket receiver = new MulticastSocket(10003);
 			DatagramSocket receiver = new DatagramSocket(10003);
 //			receiver.setBroadcast(true);
