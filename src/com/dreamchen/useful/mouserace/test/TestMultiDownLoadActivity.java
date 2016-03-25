@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -21,12 +22,16 @@ import android.widget.Toast;
 import com.dreamchen.useful.mouserace.PathManager;
 import com.dreamchen.useful.mouserace.R;
 import com.dreamchen.useful.mouserace.base.BaseActivity;
+import com.dreamchen.useful.mouserace.download.DownloadUtils;
+import com.dreamchen.useful.mouserace.multithread.CopyThread;
+import com.dreamchen.useful.mouserace.multithread.DownLoadInterface;
+import com.dreamchen.useful.mouserace.multithread.MultiDownLoad;
 import com.dreamchen.useful.mouserace.multithread.StateInterface;
 import com.dreamchen.useful.mouserace.utils.FileUtils;
 import com.dreamchen.useful.mouserace.utils.LogUtils;
 import com.dreamchen.useful.mouserace.utils.ToastUtils;
 
-public class TestIOActivity extends BaseActivity implements OnClickListener {
+public class TestMultiDownLoadActivity extends BaseActivity implements OnClickListener {
 	private Button btn_copy;
 	private Button btn_multi_copy;
 	private Button btn_stop;
@@ -51,19 +56,38 @@ public class TestIOActivity extends BaseActivity implements OnClickListener {
 		btn_stop.setOnClickListener(this);
 		btn_clear.setOnClickListener(this);
 		
-		fromPath = PathManager.getPhotosPath()+File.separator+"test.mp4";
+		fromPath = PathManager.getPhotosPath();
+		toPath =PathManager.getPhotosTemp();
+		
 	}
+	String uri ="http://gdown.baidu.com/data/wisegame/0258f036ba230587/shoujibaidu_16789000.apk";
 
 	private long time = 0;
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_copy:
-			toPath =PathManager.getPhotosTemp()+File.separator+System.currentTimeMillis();
-			time = System.nanoTime();
-			new CopyTask(fromPath, toPath).execute();
+			time = System.currentTimeMillis();
+//			new CopyTask(fromPath, toPath).execute();
+			new Thread(){
+				public void run() {
+					MultiDownLoad.DownFile(5, uri, toPath, "shoujibaidu_16789000.apk", stateInterface);
+				};
+			}.start();
 			break;
 		case R.id.btn_multi_copy:
+			LogUtils.Log_E("single thread download begin time:"
+					+ System.currentTimeMillis());
+			new Thread() {
+				public void run() {
+					try {
+						DownloadUtils.DownLoad(uri, fromPath + File.separator
+								+ "shoujibaidu_16789000.apk");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				};
+			}.start();
 
 			break;
 		case R.id.btn_stop:
@@ -84,13 +108,13 @@ public class TestIOActivity extends BaseActivity implements OnClickListener {
 
 	private long totalLength = 0;
 	private int threadSuccessCount = 0;
-	private StateInterface stateInterface = new StateInterface() {
+	private DownLoadInterface stateInterface = new DownLoadInterface() {
 		
 		@Override
 		public void setSuccess(boolean isSuccess) {
 			if(isSuccess)
 			LogUtils.Log_E("下载成功");
-			
+//			ToastUtils.show(mContext, "下载成功");
 		}
 		
 		@Override
@@ -108,14 +132,20 @@ public class TestIOActivity extends BaseActivity implements OnClickListener {
 		public void setSuccessCount(int num) {
 			threadSuccessCount +=num;
 			mHandler.obtainMessage(0, threadSuccessCount, -1).sendToTarget();
+			LogUtils.Log_E("");
 		}
-
+		
 		@Override
 		public void setId(int id) {
-			// TODO 自动生成的方法存根
+			
 			
 		}
-
+		
+		@Override
+		public void setCoypFactor(String tempFile, long desBegin, long desEnd) {
+			LogUtils.Log_E("begin index="+desBegin);
+			new CopyTask(toPath+File.separator+tempFile, toPath+File.separator+"shoujibaidu_16789000.apk", desBegin).execute();
+		}
 	};
 	
 	private Handler mHandler =new Handler(){
@@ -125,7 +155,7 @@ public class TestIOActivity extends BaseActivity implements OnClickListener {
 				int count  =msg.arg1;
 				if(count==5){
 					ToastUtils.show(mContext, "下载成功！");
-					LogUtils.Log_E("elapse time:"+(System.nanoTime()-time));
+					LogUtils.Log_E("total elapse time:"+(System.currentTimeMillis()-time));
 					count=0;
 					threadSuccessCount = 0;
 				}
@@ -138,24 +168,23 @@ public class TestIOActivity extends BaseActivity implements OnClickListener {
 	};
 	
 	class CopyTask extends AsyncTask<Void, Void, Void>{
-		private String from;
-		private String to;
-		private ProgressDialog pDialog;
-		public CopyTask(String from,String to){
+		private String from =null;
+		private String to =null;
+		private long begin = 0;
+		public CopyTask(String from,String to,long begin ){
 			this.from = from;
 			this.to =to;
-			pDialog = new ProgressDialog(mContext);
+			this.begin =begin;
 		}
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			pDialog.show();
+			
 		}
 
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
-			pDialog.dismiss();
 			ToastUtils.show(mContext, "复制成功");
 		}
 
@@ -176,7 +205,7 @@ public class TestIOActivity extends BaseActivity implements OnClickListener {
 					e.printStackTrace();
 				}
 			}
-			FileUtils.multi_copy(5, fromFile, toFile, stateInterface);
+			FileUtils.copy(fromFile, toFile, begin, false);
 			return null;
 		}
 		

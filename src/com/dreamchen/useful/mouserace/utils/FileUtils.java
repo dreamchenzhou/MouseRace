@@ -99,6 +99,40 @@ public class FileUtils {
 		}
 	}
 	
+	public static void copy(File from ,File to,long begin,boolean deleteSrc){
+		if(from==null||to ==null){
+			return ;
+		}
+		long time = System.nanoTime();
+		FileInputStream fis = null;
+		RandomAccessFile fout = null;
+		try {
+			fis = new FileInputStream(from);
+			fout = new RandomAccessFile(to, "rw");
+			fout.seek(begin);
+			ByteBuffer buffer = ByteBuffer.allocate(256);
+			int byteCount  = 0;
+			while((byteCount = fis.read(buffer.array()))>0){
+				fout.write(buffer.array());
+				buffer.clear();
+			}
+			LogUtils.Log_E(String.format("elapsed time=%s", System.nanoTime()-time));
+			if(deleteSrc){
+				from.delete();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				fis.close();
+				fout.close();
+			} catch (Exception e2) {
+			}
+		}
+	}
+	
 	/**
 	 * 线程数不能大于10
 	 * @param threadCount

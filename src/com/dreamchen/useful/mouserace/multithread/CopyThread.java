@@ -1,12 +1,8 @@
 package com.dreamchen.useful.mouserace.multithread;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.util.logging.LogManager;
-
-import com.dreamchen.useful.mouserace.utils.LogUtils;
 
 public class CopyThread extends Thread{
 	private RandomAccessFile fin = null;

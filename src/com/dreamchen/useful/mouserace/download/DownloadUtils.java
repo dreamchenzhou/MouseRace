@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.dreamchen.useful.mouserace.utils.LogUtils;
+
 public class DownloadUtils {
 	/**
 	 * 
@@ -42,6 +44,7 @@ public class DownloadUtils {
 			{
 				fos.write(bt, 0, read);
 			}
+			LogUtils.Log_E("single thread download end time:"+System.currentTimeMillis());
 		}
 		catch (Exception e)
 		{
