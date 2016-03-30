@@ -25,7 +25,6 @@ public class DataBase {
 		db.execSQL(sql);
 	}
 	
-	public synchronized static void insert(String table,ContentValues values){
 		db.insert(table, null, values);
 	}
 }
