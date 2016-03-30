@@ -1,6 +1,7 @@
 package com.dreamchen.useful.mouserace.database;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.dreamchen.useful.mouserace.PathManager;
@@ -14,6 +15,7 @@ public class DataBase {
 				+ "mouserace.db", null);
 	}
 
+	public static void createTable(String sqlCreateTable) {
 		try {
 			db.execSQL(sqlCreateTable);
 		} catch (Exception e) {
@@ -25,6 +27,15 @@ public class DataBase {
 		db.execSQL(sql);
 	}
 	
+	public static void insert(String table,ContentValues values){
 		db.insert(table, null, values);
+	}
+	
+	public static Cursor query(String table,String selection,String [] selectionArgs){
+		return db.query(table, null, selection, selectionArgs, null, null, null);
+	}
+	
+	public static Cursor rawQuery(String sql,String []selectionArgs ){
+		return db.rawQuery(sql, selectionArgs);
 	}
 }
