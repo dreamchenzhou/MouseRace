@@ -21,7 +21,6 @@ public class DataBase {
 		}
 	}
 
-	public synchronized static void excute(String sql) {
 	public static void excute(String sql) {
 		db.execSQL(sql);
 	}
