@@ -14,7 +14,6 @@ public class DataBase {
 				+ "mouserace.db", null);
 	}
 
-	public static void createTable(String sqlCreateTable) {
 	public synchronized static void createTable(String sqlCreateTable) {
 		try {
 			db.execSQL(sqlCreateTable);
@@ -23,7 +22,6 @@ public class DataBase {
 		}
 	}
 
-	public static void excute(String sql) {
 	public synchronized static void excute(String sql) {
 		db.execSQL(sql);
 	}
