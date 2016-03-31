@@ -7,5 +7,6 @@ public interface BaseInterface {
 		public void setMessage(String msg);
 		
 		public void setId(int id);
+		public void setId(String id);
 		
 }
