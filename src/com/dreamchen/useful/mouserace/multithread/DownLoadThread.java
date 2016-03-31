@@ -33,7 +33,6 @@ public class DownLoadThread extends Thread {
 	private String threadId;
 	private String threadName;
 	private String desFileName;
-	
 	/**
 	 * 
 	 * @param uri 下载文件的uri
