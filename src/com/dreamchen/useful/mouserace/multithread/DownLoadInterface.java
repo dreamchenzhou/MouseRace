@@ -16,4 +16,4 @@ public interface DownLoadInterface extends StateInterface{
 	public boolean isPause();
 	
 	public boolean isStop();
-}
+}   
