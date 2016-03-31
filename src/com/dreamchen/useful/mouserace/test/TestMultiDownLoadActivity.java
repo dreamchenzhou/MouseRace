@@ -5,12 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.security.auth.PrivateCredentialPermission;
-
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.database.DatabaseErrorHandler;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,11 +26,9 @@ import com.dreamchen.useful.mouserace.database.DataTrigger;
 import com.dreamchen.useful.mouserace.database.TaskTable;
 import com.dreamchen.useful.mouserace.database.ThreadTable;
 import com.dreamchen.useful.mouserace.download.DownloadUtils;
-import com.dreamchen.useful.mouserace.multithread.CopyThread;
 import com.dreamchen.useful.mouserace.multithread.DownLoadInterface;
 import com.dreamchen.useful.mouserace.multithread.DownLoadThread;
 import com.dreamchen.useful.mouserace.multithread.MultiDownLoad;
-import com.dreamchen.useful.mouserace.multithread.StateInterface;
 import com.dreamchen.useful.mouserace.utils.FileUtils;
 import com.dreamchen.useful.mouserace.utils.LogUtils;
 import com.dreamchen.useful.mouserace.utils.ToastUtils;
@@ -128,7 +121,7 @@ public class TestMultiDownLoadActivity extends BaseActivity implements OnClickLi
 				List<ThreadBean> threadBeans = ThreadTable.query("uid=?", new String[]{id});
 				if(!threadBeans.isEmpty()){
 					ThreadBean bean = threadBeans.get(0);
-					new DownLoadThread(bean.getUri(), bean.getFile_path(), id, id, bean.getFile_name(), bean.getBegin_index(), bean.getEnd_index(), stateInterface).start();
+					new DownLoadThread(bean.getUri(), bean.getFile_path(), id, id, bean.getFile_name(), bean.getLength(),bean.getBegin_index(), bean.getEnd_index(), stateInterface).start();
 				}
 			}
 			break;
