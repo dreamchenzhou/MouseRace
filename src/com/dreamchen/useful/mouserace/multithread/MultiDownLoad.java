@@ -60,6 +60,7 @@ public class MultiDownLoad extends FileBase{
 					ThreadTable.insert(threadBean);
 					new DownLoadThread(uri, toDir,threadId,
 							threadId,desFileName,
+							threadId,desFileName,0,
 							begin, end, stateInterface).start();
 					begin = end;
 					if(i==(threadCount-2)){
