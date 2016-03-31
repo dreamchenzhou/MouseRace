@@ -10,11 +10,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
+import java.util.Random;
+import java.util.UUID;
+
+import com.dreamchen.useful.mouserace.bean.ThreadBean;
+import com.dreamchen.useful.mouserace.database.TaskBean;
+import com.dreamchen.useful.mouserace.database.TaskTable;
+import com.dreamchen.useful.mouserace.database.ThreadTable;
 
 
 public class MultiDownLoad extends FileBase{
 	
-	public static void DownFile(int threadCount,String uri,String toDir,String name,DownLoadInterface stateInterface){
+	public static void DownFile(int threadCount,String uri,String toDir,String desFileName,DownLoadInterface stateInterface){
 		try {
 			URL url = new URL(uri);
 			URLConnection connection =  url.openConnection();
@@ -31,9 +38,29 @@ public class MultiDownLoad extends FileBase{
 				}
 				long begin =0;
 				long end = singleLength;
+				String taskId = UUID.randomUUID().toString();
+				TaskBean taskBean = new TaskBean();
+				taskBean.setUid(taskId);
+				taskBean.setLeft_thread(threadCount);
+				taskBean.setFinish(2);
+				taskBean.setName(taskId);
+				TaskTable.insert(taskBean);
 				for(int i=0;i<threadCount;i++){
-					//
-					new DownLoadThread(uri, toDir, begin, end, i+1, stateInterface).start();
+					String threadId = UUID.randomUUID().toString();
+					ThreadBean threadBean = new ThreadBean();
+					threadBean.setUid(threadId);
+					threadBean.setTask_uid(taskId);
+					threadBean.setUri(uri);
+					threadBean.setName(threadId);
+					threadBean.setBegin_index(begin);
+					threadBean.setEnd_index(end);
+					threadBean.setFile_path(toDir);
+					threadBean.setFile_name(desFileName);
+					threadBean.setTemp_file_path(toDir+File.separator+threadId);
+					ThreadTable.insert(threadBean);
+					new DownLoadThread(uri, toDir,threadId,
+							threadId,desFileName,
+							begin, end, stateInterface).start();
 					begin = end;
 					if(i==(threadCount-2)){
 						end = begin+lastBlockLength;
@@ -42,7 +69,7 @@ public class MultiDownLoad extends FileBase{
 					}
 				}
 			}else{
-				new SingleDownLoadThread(uri, toDir, name, stateInterface).start();
+				new SingleDownLoadThread(uri, toDir, desFileName, stateInterface).start();
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -51,6 +78,10 @@ public class MultiDownLoad extends FileBase{
 		}
 	}
 	
+	/**
+	 * 
+	 * 单线程下载
+	 */
 	private static class SingleDownLoadThread extends Thread{
 		private String uri;
 		

@@ -111,10 +111,11 @@ public class TestIOActivity extends BaseActivity implements OnClickListener {
 		}
 
 		@Override
-		public void setId(int id) {
+		public void setId(String id) {
 			// TODO 自动生成的方法存根
 			
 		}
+
 
 	};
 	

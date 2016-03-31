@@ -2,12 +2,15 @@ package com.dreamchen.useful.mouserace.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.security.auth.PrivateCredentialPermission;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.database.DatabaseErrorHandler;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,9 +25,15 @@ import android.widget.Toast;
 import com.dreamchen.useful.mouserace.PathManager;
 import com.dreamchen.useful.mouserace.R;
 import com.dreamchen.useful.mouserace.base.BaseActivity;
+import com.dreamchen.useful.mouserace.bean.ThreadBean;
+import com.dreamchen.useful.mouserace.database.DataBase;
+import com.dreamchen.useful.mouserace.database.DataTrigger;
+import com.dreamchen.useful.mouserace.database.TaskTable;
+import com.dreamchen.useful.mouserace.database.ThreadTable;
 import com.dreamchen.useful.mouserace.download.DownloadUtils;
 import com.dreamchen.useful.mouserace.multithread.CopyThread;
 import com.dreamchen.useful.mouserace.multithread.DownLoadInterface;
+import com.dreamchen.useful.mouserace.multithread.DownLoadThread;
 import com.dreamchen.useful.mouserace.multithread.MultiDownLoad;
 import com.dreamchen.useful.mouserace.multithread.StateInterface;
 import com.dreamchen.useful.mouserace.utils.FileUtils;
@@ -35,6 +44,8 @@ public class TestMultiDownLoadActivity extends BaseActivity implements OnClickLi
 	private Button btn_copy;
 	private Button btn_multi_copy;
 	private Button btn_stop;
+	private Button btn_pause;
+	private Button btn_restart;
 	private Button btn_clear;
 	private Context mContext;
 	private String fromPath = null;
@@ -48,21 +59,37 @@ public class TestMultiDownLoadActivity extends BaseActivity implements OnClickLi
 		
 		btn_copy = (Button) findViewById(R.id.btn_copy);
 		btn_multi_copy = (Button) findViewById(R.id.btn_multi_copy);
+		btn_pause = (Button) findViewById(R.id.btn_pause);
 		btn_stop = (Button) findViewById(R.id.btn_stop);
+		btn_restart = (Button) findViewById(R.id.btn_restart);
 		btn_clear = (Button) findViewById(R.id.btn_clear);
 		
 		btn_copy.setOnClickListener(this);
 		btn_multi_copy.setOnClickListener(this);
+		btn_pause.setOnClickListener(this);
 		btn_stop.setOnClickListener(this);
+		btn_restart.setOnClickListener(this);
 		btn_clear.setOnClickListener(this);
 		
 		fromPath = PathManager.getPhotosPath();
 		toPath =PathManager.getPhotosTemp();
+		//创建数据库表thread 和task
+		DataBase.createTable(ThreadTable.CREATE_TABLE_SQL);
+		DataBase.createTable(TaskTable.CREATE_TABLE_SQL);
+		// 创建触发器
+		DataBase.excute(DataTrigger.TRIGGER_AFTER_DELETE_TASK);
+		DataBase.excute(DataTrigger.TRIGGER_AFTER_UPDATE_THREAD);
 		
 	}
 	String uri ="http://gdown.baidu.com/data/wisegame/0258f036ba230587/shoujibaidu_16789000.apk";
 
 	private long time = 0;
+	
+	private boolean stop = false;
+	
+	private boolean pause = false;
+	private List<String> faiedThread = new ArrayList<String>();
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -90,8 +117,20 @@ public class TestMultiDownLoadActivity extends BaseActivity implements OnClickLi
 			}.start();
 
 			break;
+		case R.id.btn_pause:
+			pause = true;
+			break;
 		case R.id.btn_stop:
-			
+			stop = true;
+			break;
+		case R.id.btn_restart:
+			for (String id : faiedThread) {
+				List<ThreadBean> threadBeans = ThreadTable.query("uid=?", new String[]{id});
+				if(!threadBeans.isEmpty()){
+					ThreadBean bean = threadBeans.get(0);
+					new DownLoadThread(bean.getUri(), bean.getFile_path(), id, id, bean.getFile_name(), bean.getBegin_index(), bean.getEnd_index(), stateInterface).start();
+				}
+			}
 			break;
 		case R.id.btn_clear:
 			File toFile =new File(toPath);
@@ -108,6 +147,15 @@ public class TestMultiDownLoadActivity extends BaseActivity implements OnClickLi
 
 	private long totalLength = 0;
 	private int threadSuccessCount = 0;
+	
+	private boolean Pause(){
+		return pause;
+	}
+	
+	private boolean Stop(){
+		return stop;
+	}
+	
 	private DownLoadInterface stateInterface = new DownLoadInterface() {
 		
 		@Override
@@ -136,16 +184,46 @@ public class TestMultiDownLoadActivity extends BaseActivity implements OnClickLi
 		}
 		
 		@Override
-		public void setId(int id) {
-			
+		public void setId(String id) {
 			
 		}
 		
 		@Override
-		public void setCoypFactor(String tempFile, long desBegin, long desEnd) {
-			LogUtils.Log_E("begin index="+desBegin);
-			new CopyTask(toPath+File.separator+tempFile, toPath+File.separator+"shoujibaidu_16789000.apk", desBegin).execute();
+		public boolean isPause() {
+			return Pause();
 		}
+
+		@Override
+		public boolean isStop() {
+			return Stop();
+		}
+
+		@Override
+		public void setInterrupt(String tempFile, String threadId,
+				String threadName, long downLength, long beging, long end) {
+			ThreadBean threadBean = new ThreadBean();
+			threadBean.setUid(threadId);
+			threadBean.setName(threadId);
+			threadBean.setLength(downLength);
+			threadBean.setTemp_file_path(tempFile);
+			threadBean.setBegin_index(beging);
+			threadBean.setEnd_index(end);
+			threadBean.setFinish(0);
+			ThreadTable.update(" uid =? ", new String []{threadId}, threadBean);
+		}
+
+		@Override
+		public void setCoypFactor(String tempFile, String desFile,
+				long desBegin, long desEnd) {
+			new CopyTask(tempFile, desFile, desBegin).execute();
+		}
+
+		@Override
+		public void setFailedThreadId(String id) {
+			faiedThread.add(id);
+			LogUtils.Log_E("失败的线程id:"+id);
+		}
+		
 	};
 	
 	private Handler mHandler =new Handler(){

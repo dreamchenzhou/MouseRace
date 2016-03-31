@@ -37,7 +37,7 @@ public class PathManager {
 	
 	static
 	{
-		String appDomainPath = "/dream/%s/";
+		String appDomainPath = "/dream/%s";
 		appDomainPath = String.format(appDomainPath, AppName);
 		
 		cardCollection.add("/storage/sdcard0");
@@ -100,7 +100,7 @@ public class PathManager {
 	{
 		String path = startUpPath + "/Files/";
 		mkdirs(path);
-		path = path + "/t_gsms_luohu.db";
+		path = path + "/";
 		return path;
 	}
 
@@ -108,7 +108,7 @@ public class PathManager {
 	{
 		String path = startUpPath + "/Files/";
 		mkdirs(path);
-		path = path + "/t_gsms_luohu_off.db";
+		path = path + "/";
 		return path;
 	}
 
@@ -118,7 +118,7 @@ public class PathManager {
 
 		String path = startUpPath + "/Files/Temp/";
 		mkdirs(path);
-		path = path + "/t_gsms_luohu_off.db";
+		path = path + "/";
 		return path;
 	}
 

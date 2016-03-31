@@ -25,22 +25,39 @@ public class DownLoadThread extends Thread {
 	private long end;
 	
 	private DownLoadInterface stateInterface;
-	private int threadId;
+	private String threadId;
 	private String threadName;
-	public DownLoadThread(String uri,String toDir,long begin, long end,int threadId,DownLoadInterface stateInterface){
+	private String desFileName;
+	
+	/**
+	 * 
+	 * @param uri 下载文件的uri
+	 * @param toDir 目的路径文件的dir
+	 * @param threadId 线程的id
+	 * @param threadName 线程的名称
+	 * @param desFileName 目的文件的全名，不包含路径！！！
+	 * @param begin 下载的开始位置，或者临时文件拷贝到目的文件的开始位置
+	 * @param end 下载的结束位置，或者临时文件拷贝到目的文件的结束位置
+	 * @param stateInterface 回调接口
+	 */
+	public DownLoadThread(String uri,String toDir,String threadId,String threadName,String desFileName,long begin, long end,DownLoadInterface stateInterface){
 		this.uri = uri;
 		this.toDir = toDir;
+		this.threadId =threadId;
+		this.threadName = threadName;
+		this.desFileName = desFileName;
 		this.begin = begin;
 		this.end =end;
-		this.threadId =threadId;
 		this.stateInterface =stateInterface;
-		threadName =UUID.randomUUID().toString();
 	}
 	
 	@Override
 	public void run() {
 		BufferedOutputStream bos  =null;
 		InputStream is= null;
+		File file = null;
+		long byteCount  =0;
+		long totalCount = 0;
 		try {
 			URL url =new URL(uri);
 			URLConnection connection =url.openConnection();
@@ -51,29 +68,46 @@ public class DownLoadThread extends Thread {
 			if(!dir.exists()){
 				dir.mkdirs();
 			}
-			File file =new File(toDir+File.separator+threadName);
+			file =new File(toDir+File.separator+threadName);
 			if(!file.exists()){
 				file.createNewFile();
 			}
 			is  =connection.getInputStream();
 			bos= new BufferedOutputStream(new FileOutputStream(file));
 			ByteBuffer buffer  = ByteBuffer.allocate(1024);
-			long byteCount  =0;
-			long totalCount = 0;
 			while((byteCount = is.read(buffer.array()))>0){
+				// 暂停等待
+				if(stateInterface.isPause()){
+					while (stateInterface.isPause()) {
+						Thread.sleep(1000);
+					}
+				}
+				// 停止下载
+				if(stateInterface.isStop()){
+					break;
+				}
 				bos.write(buffer.array(),0,(int) byteCount);
 				totalCount+=byteCount;
 				bos.flush();
 				buffer.clear();
  			}
-			stateInterface.setLength(totalCount);
-			LogUtils.Log_E("filesize:"+file.length());
-			stateInterface.setId(threadId);
-			stateInterface.setCoypFactor(threadName, begin, end);
-			stateInterface.setSuccessCount(1);
+			if(!stateInterface.isStop()){
+				stateInterface.setLength(totalCount);
+				LogUtils.Log_E("filesize:"+file.length());
+				stateInterface.setId(threadId);
+				stateInterface.setCoypFactor(file.getAbsolutePath(),toDir+File.separator+desFileName, begin, end);
+				stateInterface.setSuccessCount(1);
+			}else{
+				stateInterface.setMessage("线程被停止！！！");
+				stateInterface.setSuccess(false);
+			}
 		} catch (Exception e) {
 			stateInterface.setMessage(e.getMessage());
 			stateInterface.setSuccess(false);
+			if(!stateInterface.isStop()){
+				stateInterface.setInterrupt(file.getAbsolutePath(),threadName,threadName, totalCount, begin+totalCount, end);
+				stateInterface.setFailedThreadId(threadId);
+			}
 		}finally{
 			try {
 				is.close();

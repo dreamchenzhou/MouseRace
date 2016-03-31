@@ -15,6 +15,7 @@ public class ApplicationCore extends Application implements UncaughtExceptionHan
 	public void onCreate() {
 		applicationCore = this;
 		SDKInitializer.initialize(this);
+		Thread.setDefaultUncaughtExceptionHandler(this);
 	};
 
 	public static ApplicationCore getInstance(){

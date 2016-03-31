@@ -23,7 +23,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="stop" />
-
+    <Button
+        android:id="@+id/btn_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="pause" />
+<Button
+        android:id="@+id/btn_restart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="restart" />
     <Button
         android:id="@+id/btn_clear"
         android:layout_width="wrap_content"

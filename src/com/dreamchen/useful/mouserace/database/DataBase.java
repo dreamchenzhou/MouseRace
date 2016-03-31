@@ -31,11 +31,15 @@ public class DataBase {
 		db.insert(table, null, values);
 	}
 	
-	public static Cursor query(String table,String selection,String [] selectionArgs){
-		return db.query(table, null, selection, selectionArgs, null, null, null);
+	public static Cursor query(String table,String [] colums,String selection,String [] selectionArgs){
+		return db.query(table, colums, selection, selectionArgs, null, null, null);
 	}
 	
 	public static Cursor rawQuery(String sql,String []selectionArgs ){
 		return db.rawQuery(sql, selectionArgs);
+	}
+	
+	public static void update(String table,ContentValues values,String whereClause,String [] whereClauses){
+		db.update(table, values, whereClause, whereClauses);
 	}
 }
