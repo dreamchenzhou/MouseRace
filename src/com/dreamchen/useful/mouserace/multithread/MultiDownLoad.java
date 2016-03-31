@@ -59,7 +59,6 @@ public class MultiDownLoad extends FileBase{
 					threadBean.setTemp_file_path(toDir+File.separator+threadId);
 					ThreadTable.insert(threadBean);
 					new DownLoadThread(uri, toDir,threadId,
-							threadId,desFileName,
 							threadId,desFileName,0,
 							begin, end, stateInterface).start();
 					begin = end;
