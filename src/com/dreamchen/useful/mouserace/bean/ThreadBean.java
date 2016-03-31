@@ -9,7 +9,9 @@ public class ThreadBean extends BaseBean{
 	private long begin_index;
 	
 	private long end_index;
-	
+	/**
+	 * 已经下载的长度
+	 */
 	private long length;
 	
 	private long block_size;
