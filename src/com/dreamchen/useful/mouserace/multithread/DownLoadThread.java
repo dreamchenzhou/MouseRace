@@ -5,9 +5,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.UUID;
 
 import com.dreamchen.useful.mouserace.utils.LogUtils;
@@ -23,6 +26,8 @@ public class DownLoadThread extends Thread {
 	private long begin;
 	
 	private long end;
+	
+	private long hasDown;
 	
 	private DownLoadInterface stateInterface;
 	private String threadId;
@@ -40,7 +45,7 @@ public class DownLoadThread extends Thread {
 	 * @param end 下载的结束位置，或者临时文件拷贝到目的文件的结束位置
 	 * @param stateInterface 回调接口
 	 */
-	public DownLoadThread(String uri,String toDir,String threadId,String threadName,String desFileName,long begin, long end,DownLoadInterface stateInterface){
+	public DownLoadThread(String uri,String toDir,String threadId,String threadName,String desFileName,long hasDown,long begin, long end,DownLoadInterface stateInterface){
 		this.uri = uri;
 		this.toDir = toDir;
 		this.threadId =threadId;
@@ -48,12 +53,14 @@ public class DownLoadThread extends Thread {
 		this.desFileName = desFileName;
 		this.begin = begin;
 		this.end =end;
+		this.hasDown = hasDown;
 		this.stateInterface =stateInterface;
 	}
 	
 	@Override
 	public void run() {
-		BufferedOutputStream bos  =null;
+		RandomAccessFile file_out = null;
+		FileChannel channel_out = null;
 		InputStream is= null;
 		File file = null;
 		long byteCount  =0;
@@ -73,7 +80,9 @@ public class DownLoadThread extends Thread {
 				file.createNewFile();
 			}
 			is  =connection.getInputStream();
-			bos= new BufferedOutputStream(new FileOutputStream(file));
+			file_out = new RandomAccessFile(file, "rw");
+//			file_out.seek(hasDown);
+			channel_out = file_out.getChannel();
 			ByteBuffer buffer  = ByteBuffer.allocate(1024);
 			while((byteCount = is.read(buffer.array()))>0){
 				// 暂停等待
@@ -86,9 +95,9 @@ public class DownLoadThread extends Thread {
 				if(stateInterface.isStop()){
 					break;
 				}
-				bos.write(buffer.array(),0,(int) byteCount);
+				channel_out.write(buffer,hasDown);
+				hasDown+=byteCount;
 				totalCount+=byteCount;
-				bos.flush();
 				buffer.clear();
  			}
 			if(!stateInterface.isStop()){
@@ -111,7 +120,7 @@ public class DownLoadThread extends Thread {
 		}finally{
 			try {
 				is.close();
-				bos.close();
+				channel_out.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
