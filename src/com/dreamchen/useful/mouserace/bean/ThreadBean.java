@@ -1,6 +1,9 @@
 package com.dreamchen.useful.mouserace.bean;
 
 public class ThreadBean extends BaseBean{
+	
+	private String task_uid;
+	
 	private String uri;
 	
 	private long begin_index;
@@ -11,11 +14,15 @@ public class ThreadBean extends BaseBean{
 	
 	private long block_size;
 	
+	private String temp_file_path;
+	
 	private String file_path;
 	
 	private String file_name;
-	
-	private boolean is_finished;
+	/**
+	 * 0 未完成，1完成, 2正在进行
+	 */
+	private int finish;
 
 	public String getUri() {
 		return uri;
@@ -73,12 +80,27 @@ public class ThreadBean extends BaseBean{
 		this.file_name = file_name;
 	}
 
-	public boolean isIs_finished() {
-		return is_finished;
+	public int getFinish() {
+		return finish;
 	}
 
-	public void setIs_finished(boolean is_finished) {
-		this.is_finished = is_finished;
+	public void setFinish(int finish) {
+		this.finish = finish;
 	}
 
+	public String getTask_uid() {
+		return task_uid;
+	}
+
+	public void setTask_uid(String task_uid) {
+		this.task_uid = task_uid;
+	}
+
+	public String getTemp_file_path() {
+		return temp_file_path;
+	}
+
+	public void setTemp_file_path(String temp_file_path) {
+		this.temp_file_path = temp_file_path;
+	}
 }
