@@ -5,10 +5,28 @@ public class ThreadBean extends BaseBean{
 	private String task_uid;
 	
 	private String uri;
+	/**
+	 * 每一块
+	 * 远程的文件开始下载位置
+	 */
+	private long uri_begin_index;
 	
-	private long begin_index;
+	/**
+	 * 每一块
+	 * 本地文件的开始下载地址
+	 */
+	private long file_begin_index;
+	/**
+	 * 每一块
+	 * 远程的文件终点下载位置
+	 */
+	private long uri_end_index;
 	
-	private long end_index;
+	/**
+	 * 每一块
+	 * 本地的文件终点下载位置
+	 */
+	private long file_end_index;
 	/**
 	 * 已经下载的长度
 	 */
@@ -34,20 +52,36 @@ public class ThreadBean extends BaseBean{
 		this.uri = uri;
 	}
 
-	public long getBegin_index() {
-		return begin_index;
+	public long getUri_begin_index() {
+		return uri_begin_index;
 	}
 
-	public void setBegin_index(long begin_index) {
-		this.begin_index = begin_index;
+	public void setUri_begin_index(long uri_begin_index) {
+		this.uri_begin_index = uri_begin_index;
 	}
 
-	public long getEnd_index() {
-		return end_index;
+	public long getFile_begin_index() {
+		return file_begin_index;
 	}
 
-	public void setEnd_index(long end_index) {
-		this.end_index = end_index;
+	public void setFile_begin_index(long file_begin_index) {
+		this.file_begin_index = file_begin_index;
+	}
+
+	public long getUri_end_index() {
+		return uri_end_index;
+	}
+
+	public void setUri_end_index(long uri_end_index) {
+		this.uri_end_index = uri_end_index;
+	}
+
+	public long getFile_end_index() {
+		return file_end_index;
+	}
+
+	public void setFile_end_index(long file_end_index) {
+		this.file_end_index = file_end_index;
 	}
 
 	public long getLength() {

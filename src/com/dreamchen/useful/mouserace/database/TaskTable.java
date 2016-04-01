@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.TextUtils;
 
+import com.dreamchen.useful.mouserace.bean.TaskBean;
 import com.dreamchen.useful.mouserace.utils.LogUtils;
 
 public class TaskTable extends TableBase{
