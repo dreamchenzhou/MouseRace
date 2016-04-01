@@ -118,7 +118,6 @@ public class TestMultiDownLoadActivity extends BaseActivity implements OnClickLi
 				List<ThreadBean> threadBeans = ThreadTable.query("uid=?", new String[]{id});
 				if(!threadBeans.isEmpty()){
 					ThreadBean bean = threadBeans.get(0);
-					new DownLoadThread(bean.getUri(), bean.getFile_path(), id, id, bean.getFile_name(), bean.getLength(),bean.getBegin_index(), bean.getEnd_index(), stateInterface).start();
 					new DownLoadThread(
 							bean.getUri(), bean.getFile_path(), id, id, bean.getFile_name(), 
 							bean.getLength(),bean.getUri_begin_index(), 
@@ -196,7 +195,6 @@ public class TestMultiDownLoadActivity extends BaseActivity implements OnClickLi
 
 		@Override
 		public void setInterrupt(String tempFile, String threadId,
-				String threadName, long downLength, long beging, long end) {
 				String threadName, long downLength, long uriBegin, long uriEnd,long fileBegin,long fileEnd) {
 			ThreadBean threadBean = new ThreadBean();
 			threadBean.setUid(threadId);
