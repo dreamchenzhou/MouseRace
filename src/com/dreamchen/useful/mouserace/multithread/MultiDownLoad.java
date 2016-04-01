@@ -10,11 +10,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
-import java.util.Random;
 import java.util.UUID;
 
+import com.dreamchen.useful.mouserace.bean.TaskBean;
 import com.dreamchen.useful.mouserace.bean.ThreadBean;
-import com.dreamchen.useful.mouserace.database.TaskBean;
 import com.dreamchen.useful.mouserace.database.TaskTable;
 import com.dreamchen.useful.mouserace.database.ThreadTable;
 
@@ -52,15 +51,17 @@ public class MultiDownLoad extends FileBase{
 					threadBean.setTask_uid(taskId);
 					threadBean.setUri(uri);
 					threadBean.setName(threadId);
-					threadBean.setBegin_index(begin);
-					threadBean.setEnd_index(end);
+					threadBean.setUri_begin_index(begin);
+					threadBean.setUri_end_index(end);
+					threadBean.setFile_begin_index(begin);
+					threadBean.setFile_end_index(end);
 					threadBean.setFile_path(toDir);
 					threadBean.setFile_name(desFileName);
 					threadBean.setTemp_file_path(toDir+File.separator+threadId);
 					ThreadTable.insert(threadBean);
 					new DownLoadThread(uri, toDir,threadId,
 							threadId,desFileName,0,
-							begin, end, stateInterface).start();
+							begin, end,begin,end, stateInterface).start();
 					begin = end;
 					if(i==(threadCount-2)){
 						end = begin+lastBlockLength;
