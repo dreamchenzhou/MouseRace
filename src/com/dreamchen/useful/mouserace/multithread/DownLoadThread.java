@@ -23,10 +23,8 @@ public class DownLoadThread extends Thread {
 	
 	private String toDir;
 	
-	private long begin;
 	private long uriBegin;
 	
-	private long end;
 	private long uriEnd;
 	
 	private long fileBegin;
@@ -50,7 +48,6 @@ public class DownLoadThread extends Thread {
 	 * @param end 下载的结束位置，或者临时文件拷贝到目的文件的结束位置
 	 * @param stateInterface 回调接口
 	 */
-	public DownLoadThread(String uri,String toDir,String threadId,String threadName,String desFileName,long hasDown,long begin, long end,DownLoadInterface stateInterface){
 	public DownLoadThread(String uri,String toDir,String threadId,String threadName,String desFileName,
 			long hasDown,long uriBegin, long uriEnd, long fileBegin,long fileEnd,DownLoadInterface stateInterface){
 		this.uri = uri;
