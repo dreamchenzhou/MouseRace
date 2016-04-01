@@ -24,8 +24,14 @@ public class DownLoadThread extends Thread {
 	private String toDir;
 	
 	private long begin;
+	private long uriBegin;
 	
 	private long end;
+	private long uriEnd;
+	
+	private long fileBegin;
+	
+	private long fileEnd;
 	
 	private long hasDown;
 	
@@ -45,13 +51,17 @@ public class DownLoadThread extends Thread {
 	 * @param stateInterface 回调接口
 	 */
 	public DownLoadThread(String uri,String toDir,String threadId,String threadName,String desFileName,long hasDown,long begin, long end,DownLoadInterface stateInterface){
+	public DownLoadThread(String uri,String toDir,String threadId,String threadName,String desFileName,
+			long hasDown,long uriBegin, long uriEnd, long fileBegin,long fileEnd,DownLoadInterface stateInterface){
 		this.uri = uri;
 		this.toDir = toDir;
 		this.threadId =threadId;
 		this.threadName = threadName;
 		this.desFileName = desFileName;
-		this.begin = begin;
-		this.end =end;
+		this.uriBegin = uriBegin;
+		this.uriEnd =uriEnd;
+		this.fileBegin = fileBegin;
+		this.fileEnd = fileEnd;
 		this.hasDown = hasDown;
 		this.stateInterface =stateInterface;
 	}
@@ -68,7 +78,7 @@ public class DownLoadThread extends Thread {
 			URL url =new URL(uri);
 			URLConnection connection =url.openConnection();
 			connection.setAllowUserInteraction(true);
-			connection.setRequestProperty("Range", "bytes="+begin+"-"+end);
+			connection.setRequestProperty("Range", "bytes="+uriBegin+"-"+uriEnd);
 			connection.setDoInput(true);
 			File dir = new File(toDir);
 			if(!dir.exists()){
@@ -103,7 +113,7 @@ public class DownLoadThread extends Thread {
 				stateInterface.setLength(totalCount);
 				LogUtils.Log_E("filesize:"+file.length());
 				stateInterface.setId(threadId);
-				stateInterface.setCoypFactor(file.getAbsolutePath(),toDir+File.separator+desFileName, begin, end);
+				stateInterface.setCoypFactor(file.getAbsolutePath(),toDir+File.separator+desFileName,fileBegin , fileEnd);
 				stateInterface.setSuccessCount(1);
 			}else{
 				stateInterface.setMessage("线程被停止！！！");
@@ -113,7 +123,8 @@ public class DownLoadThread extends Thread {
 			stateInterface.setMessage(e.getMessage());
 			stateInterface.setSuccess(false);
 			if(!stateInterface.isStop()){
-				stateInterface.setInterrupt(file.getAbsolutePath(),threadName,threadName, totalCount, begin+totalCount, end);
+				stateInterface.setInterrupt(file.getAbsolutePath(),threadName,threadName, 
+						totalCount, uriBegin+totalCount, uriEnd,fileBegin,fileEnd);
 				stateInterface.setFailedThreadId(threadId);
 			}
 		}finally{
