@@ -21,13 +21,23 @@ public class ThreadTable extends TableBase {
 	 */
 	public static final String COLUMN_URI ="uri";
 	/**
-	 * 开始位置
+	 * 远程文件开始位置
 	 */
-	public static final String COLUMN_BEGIN_INDEX ="begin_index";
+	public static final String COLUMN_URI_BEGIN_INDEX ="uri_begin_index";
 	/**
-	 * 结束位置
+	 * 本地文件开始位置
 	 */
-	public static final String COLUMN_END_INDEX ="end_index";
+	public static final String COLUMN_FILE_BEGIN_INDEX ="file_begin_index";
+	/**
+	 * 远程结束位置
+	 */
+	public static final String COLUMN_URI_END_INDEX ="uri_end_index";
+	
+	/**
+	 * 本地文件结束位置
+	 */
+	public static final String COLUMN_FILE_END_INDEX ="file_end_index";
+	
 	/**
 	 * 已经下载的长度
 	 */
@@ -61,8 +71,10 @@ public class ThreadTable extends TableBase {
 			+ COLUMN_TASK_UID+" text, "
 			+ COLUMN_NAME+" text, "
 			+ COLUMN_URI+" text,"
-			+ COLUMN_BEGIN_INDEX+" long, "
-			+ COLUMN_END_INDEX +" long, "
+			+ COLUMN_URI_BEGIN_INDEX+" long, "
+			+ COLUMN_FILE_BEGIN_INDEX +" long, "
+			+ COLUMN_URI_END_INDEX +" long, "
+			+ COLUMN_FILE_END_INDEX +" long, "
 			+ COLUMN_LENGTH+" long, "
 			+ COLUMN_BLOCK_SIZE+ " long, "
 			+ COLUMN_TEMP_FILE_PATH+ " text, "
@@ -80,8 +92,10 @@ public class ThreadTable extends TableBase {
 			values.put(COLUMN_TASK_UID, bean.getTask_uid());
 			values.put(COLUMN_NAME, bean.getName());
 			values.put(COLUMN_URI, bean.getUri() );
-			values.put(COLUMN_BEGIN_INDEX, bean.getBegin_index());
-			values.put(COLUMN_END_INDEX, bean.getEnd_index());
+			values.put(COLUMN_URI_BEGIN_INDEX, bean.getUri_begin_index());
+			values.put(COLUMN_FILE_BEGIN_INDEX, bean.getFile_begin_index());
+			values.put(COLUMN_URI_END_INDEX, bean.getUri_end_index());
+			values.put(COLUMN_FILE_END_INDEX, bean.getFile_end_index());
 			values.put(COLUMN_LENGTH, bean.getLength());
 			values.put(COLUMN_BLOCK_SIZE, bean.getBlock_size());
 			values.put(COLUMN_FILE_NAME, bean.getFile_name());
@@ -110,10 +124,14 @@ public class ThreadTable extends TableBase {
 			values.put(COLUMN_NAME, bean.getName());
 			if(!TextUtils.isEmpty(bean.getUri() ))
 			values.put(COLUMN_URI, bean.getUri() );
-			if(bean.getBegin_index()>0)
-			values.put(COLUMN_BEGIN_INDEX, bean.getBegin_index());
-			if(bean.getEnd_index()>0)
-			values.put(COLUMN_END_INDEX, bean.getEnd_index());
+			if(bean.getUri_begin_index()>0)
+			values.put(COLUMN_URI_BEGIN_INDEX, bean.getUri_begin_index());
+			if(bean.getFile_begin_index()>0)
+				values.put(COLUMN_FILE_BEGIN_INDEX, bean.getFile_begin_index());
+			if(bean.getUri_end_index()>0)
+			values.put(COLUMN_URI_END_INDEX, bean.getUri_end_index());
+			if(bean.getFile_end_index()>0)
+				values.put(COLUMN_FILE_END_INDEX, bean.getFile_end_index());
 			if(bean.getLength()>0)
 			values.put(COLUMN_LENGTH, bean.getLength());
 			if(bean.getBlock_size()>0)
@@ -143,8 +161,10 @@ public class ThreadTable extends TableBase {
 			values.put(COLUMN_TASK_UID, bean.getTask_uid());
 			values.put(COLUMN_NAME, bean.getName());
 			values.put(COLUMN_URI, bean.getUri() );
-			values.put(COLUMN_BEGIN_INDEX, bean.getBegin_index());
-			values.put(COLUMN_END_INDEX, bean.getEnd_index());
+			values.put(COLUMN_URI_BEGIN_INDEX, bean.getUri_begin_index());
+			values.put(COLUMN_FILE_BEGIN_INDEX, bean.getFile_begin_index());
+			values.put(COLUMN_URI_END_INDEX, bean.getUri_end_index());
+			values.put(COLUMN_FILE_END_INDEX, bean.getFile_end_index());
 			values.put(COLUMN_LENGTH, bean.getLength());
 			values.put(COLUMN_BLOCK_SIZE, bean.getBlock_size());
 			values.put(COLUMN_FILE_NAME, bean.getFile_name());
@@ -180,8 +200,10 @@ public class ThreadTable extends TableBase {
 				bean.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));	
 				bean.setUri(cursor.getString(cursor.getColumnIndex(COLUMN_URI)));	
 				
-				bean.setBegin_index(cursor.getLong(cursor.getColumnIndex(COLUMN_BEGIN_INDEX)));
-				bean.setEnd_index(cursor.getLong(cursor.getColumnIndex(COLUMN_END_INDEX)));
+				bean.setUri_begin_index(cursor.getLong(cursor.getColumnIndex(COLUMN_URI_BEGIN_INDEX)));
+				bean.setFile_begin_index(cursor.getLong(cursor.getColumnIndex(COLUMN_FILE_BEGIN_INDEX)));
+				bean.setUri_end_index(cursor.getLong(cursor.getColumnIndex(COLUMN_URI_END_INDEX)));
+				bean.setFile_end_index(cursor.getLong(cursor.getColumnIndex(COLUMN_FILE_END_INDEX)));
 				bean.setLength(cursor.getLong(cursor.getColumnIndex(COLUMN_LENGTH)));
 				bean.setBlock_size(cursor.getLong(cursor.getColumnIndex(COLUMN_BLOCK_SIZE)));
 				
