@@ -119,8 +119,14 @@ public class TestMultiDownLoadActivity extends BaseActivity implements OnClickLi
 				if(!threadBeans.isEmpty()){
 					ThreadBean bean = threadBeans.get(0);
 					new DownLoadThread(bean.getUri(), bean.getFile_path(), id, id, bean.getFile_name(), bean.getLength(),bean.getBegin_index(), bean.getEnd_index(), stateInterface).start();
+					new DownLoadThread(
+							bean.getUri(), bean.getFile_path(), id, id, bean.getFile_name(), 
+							bean.getLength(),bean.getUri_begin_index(), 
+							bean.getUri_end_index(),bean.getFile_begin_index(),
+							bean.getFile_end_index(), stateInterface).start();
 				}
 			}
+			faiedThread.clear();
 			break;
 		case R.id.btn_clear:
 			File toFile =new File(toPath);
@@ -191,13 +197,16 @@ public class TestMultiDownLoadActivity extends BaseActivity implements OnClickLi
 		@Override
 		public void setInterrupt(String tempFile, String threadId,
 				String threadName, long downLength, long beging, long end) {
+				String threadName, long downLength, long uriBegin, long uriEnd,long fileBegin,long fileEnd) {
 			ThreadBean threadBean = new ThreadBean();
 			threadBean.setUid(threadId);
 			threadBean.setName(threadId);
 			threadBean.setLength(downLength);
 			threadBean.setTemp_file_path(tempFile);
-			threadBean.setBegin_index(beging);
-			threadBean.setEnd_index(end);
+			threadBean.setUri_begin_index(uriBegin);
+			threadBean.setUri_end_index(uriEnd);
+			threadBean.setFile_begin_index(fileBegin);
+			threadBean.setFile_end_index(fileEnd);
 			threadBean.setFinish(0);
 			ThreadTable.update(" uid =? ", new String []{threadId}, threadBean);
 		}
@@ -273,7 +282,7 @@ public class TestMultiDownLoadActivity extends BaseActivity implements OnClickLi
 					e.printStackTrace();
 				}
 			}
-			FileUtils.copy(fromFile, toFile, begin, false);
+			FileUtils.copy(fromFile, toFile, begin, true);
 			return null;
 		}
 		
