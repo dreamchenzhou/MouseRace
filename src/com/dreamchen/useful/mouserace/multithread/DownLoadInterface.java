@@ -9,7 +9,7 @@ public interface DownLoadInterface extends StateInterface{
 	 * @param beging
 	 * @param end
 	 */
-	public void setInterrupt(String tempFile,String threadId,String threadName,long downLength,long uribegin,long end);
+	public void setInterrupt(String tempFile,String threadId,String threadName,long downLength,long uribegin,long uriend,long fileBegin,long fileEnd);
 	
 	public void setFailedThreadId(String id);
 	
