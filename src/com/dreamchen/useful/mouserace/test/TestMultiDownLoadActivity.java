@@ -30,6 +30,12 @@ import com.dreamchen.useful.mouserace.utils.FileUtils;
 import com.dreamchen.useful.mouserace.utils.LogUtils;
 import com.dreamchen.useful.mouserace.utils.ToastUtils;
 
+/**
+ * 
+ * @现存bug:(1).有时候线程正常完成，apk没有拼接完整
+ * (2).线程因网络状态不好，或者其他非人为pause的话，要重试5次，5次之后如果还不成功的话，把断点信息存入数据库，以便重新下载
+ *
+ */
 public class TestMultiDownLoadActivity extends BaseActivity implements OnClickListener {
 	private Button btn_copy;
 	private Button btn_multi_copy;

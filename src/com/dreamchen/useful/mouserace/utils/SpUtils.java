@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SpUtils {
-	public static final String fileName = "topevry_ssp";
+	public static final String fileName = "topevry_mouserace";
 	
 	private static SharedPreferences.Editor getEditor(Context context){
 		SharedPreferences sp = context.getSharedPreferences(fileName,Context.MODE_WORLD_WRITEABLE);
@@ -39,6 +39,18 @@ public class SpUtils {
 		return sp.getString(key,"");
 	}
 	
+	public static void putCachePath(Context context ,String key,String value){
+		SharedPreferences.Editor editor = getEditor(context);
+		editor.putString(key, value);
+		editor.commit();
+	}
+	
+	public static String getCachePath(Context context ,String key){
+		SharedPreferences sp = getSp(context);
+		return sp.getString(key,"");
+	}
+	
+	
 	
 	public static void putInt(Context context ,String key,int value){
 		SharedPreferences.Editor editor = getEditor(context);
@@ -50,4 +62,6 @@ public class SpUtils {
 		SharedPreferences sp = getSp(context);
 		return sp.getInt(key,0);
 	}
+	
+	
 }

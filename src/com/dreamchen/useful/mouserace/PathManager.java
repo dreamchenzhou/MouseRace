@@ -264,6 +264,12 @@ public class PathManager {
 	{
 		delete(new File(path));
 	}
+	
+	public static String getMediaPath(){
+		String path = getUserPath() + "/media";
+		mkdirs(path);
+		return path;
+	}
 
 	public static void delete(File file)
 	{

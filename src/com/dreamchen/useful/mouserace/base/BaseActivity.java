@@ -1,7 +1,7 @@
 package com.dreamchen.useful.mouserace.base;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends FragmentActivity {
 
 }

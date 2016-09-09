@@ -25,7 +25,7 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>
-        <item name="android:windowBackground">@color/red_light</item>
+        <item name="android:windowBackground">@color/white</item>
         <item name="android:windowNoTitle">false</item>
     </style>
 <!--         <item name="android:windowOverscan">true</item> -->

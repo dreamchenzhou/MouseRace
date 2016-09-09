@@ -1,0 +1,2 @@
+如果使用Viewpager 装载PhotoView,
+用HackyViewPager替换ViewPager.

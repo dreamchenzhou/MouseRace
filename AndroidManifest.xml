@@ -36,7 +36,7 @@
         <!--  -->
         <activity
 
-            android:name="com.dreamchen.useful.mouserace.test.TestMultiDownLoadActivity"
+            android:name="com.dreamchen.useful.mouserace.test.TestCacheFragmentActivity"
 
             android:label="@string/app_name" 
             android:theme="@style/custome_style"
